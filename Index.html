@@ -1,0 +1,903 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Delivery Photo Tracker</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 500px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 28px;
+        }
+        
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 14px;
+        }
+        
+        .section {
+            margin-bottom: 25px;
+        }
+        
+        label {
+            display: block;
+            color: #555;
+            font-weight: 600;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+        
+        input[type="text"], input[type="number"] {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+        
+        input[type="text"]:focus, input[type="number"]:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        .camera-section {
+            text-align: center;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 12px;
+            margin: 20px 0;
+        }
+        
+        #cameraBtn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 10px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            width: 100%;
+            max-width: 300px;
+        }
+        
+        #cameraBtn:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+        
+        #cameraBtn:active {
+            transform: translateY(0);
+        }
+        
+        .preview {
+            margin-top: 15px;
+            text-align: center;
+        }
+        
+        #preview-img {
+            max-width: 100%;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        
+        #saveBtn {
+            background: #10b981;
+            color: white;
+            border: none;
+            padding: 15px;
+            border-radius: 10px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            transition: all 0.3s;
+            margin-top: 20px;
+        }
+        
+        #saveBtn:hover {
+            background: #059669;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(16, 185, 129, 0.4);
+        }
+        
+        #saveBtn:disabled {
+            background: #d1d5db;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .stats {
+            background: #f0f4ff;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            text-align: center;
+        }
+        
+        .stats-number {
+            font-size: 32px;
+            font-weight: bold;
+            color: #667eea;
+        }
+        
+        .stats-label {
+            color: #666;
+            font-size: 14px;
+            margin-top: 5px;
+        }
+        
+        .action-buttons {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
+        .btn {
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #5568d3;
+        }
+        
+        .btn-secondary {
+            background: #e5e7eb;
+            color: #374151;
+        }
+        
+        .btn-secondary:hover {
+            background: #d1d5db;
+        }
+        
+        .btn-drive {
+            background: #4285f4;
+            color: white;
+        }
+        
+        .btn-drive:hover {
+            background: #3367d6;
+        }
+        
+        .btn-success {
+            background: #10b981;
+            color: white;
+        }
+        
+        .btn-success:hover {
+            background: #059669;
+        }
+        
+        .success-message {
+            background: #d1fae5;
+            color: #065f46;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            text-align: center;
+            font-weight: 600;
+            display: none;
+        }
+        
+        .error-message {
+            background: #fee2e2;
+            color: #991b1b;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            text-align: center;
+            font-weight: 600;
+            display: none;
+        }
+        
+        .info-message {
+            background: #dbeafe;
+            color: #1e40af;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            text-align: center;
+            font-weight: 600;
+        }
+        
+        .gps-info {
+            background: #f0fdf4;
+            padding: 10px;
+            border-radius: 6px;
+            font-size: 12px;
+            color: #166534;
+            margin-top: 10px;
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        #camera-input {
+            display: none;
+        }
+        
+        .deliveries-list {
+            margin-top: 20px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        
+        .delivery-item {
+            background: #f9fafb;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .delivery-info {
+            flex: 1;
+        }
+        
+        .delivery-order {
+            font-weight: 600;
+            color: #333;
+        }
+        
+        .delivery-time {
+            font-size: 12px;
+            color: #666;
+        }
+        
+        .delivery-gps {
+            font-size: 11px;
+            color: #10b981;
+        }
+        
+        .google-status {
+            background: #f0f4ff;
+            padding: 12px;
+            border-radius: 8px;
+            margin: 15px 0;
+            text-align: center;
+            font-size: 13px;
+        }
+        
+        .google-connected {
+            color: #10b981;
+            font-weight: 600;
+        }
+        
+        .google-disconnected {
+            color: #6b7280;
+        }
+        
+        .upload-progress {
+            background: #fff7ed;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            text-align: center;
+            display: none;
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #e5e7eb;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-top: 10px;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: #4285f4;
+            width: 0%;
+            transition: width 0.3s;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📦 Delivery Tracker</h1>
+        <p class="subtitle">Capture deliveries with photo & GPS</p>
+        
+        <div class="google-status" id="googleStatus">
+            <span class="google-disconnected">📴 Not connected to Google Drive</span>
+        </div>
+        
+        <div class="stats">
+            <div class="stats-number" id="deliveryCount">0</div>
+            <div class="stats-label">Deliveries This Week</div>
+        </div>
+        
+        <div class="success-message" id="successMsg">Delivery saved successfully! ✓</div>
+        <div class="error-message" id="errorMsg">Please fill in all fields and take a photo</div>
+        <div class="upload-progress" id="uploadProgress">
+            <div>Uploading to Google Drive...</div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+            <div id="progressText" style="margin-top: 8px; font-size: 12px; color: #6b7280;"></div>
+        </div>
+        
+        <div class="section">
+            <label for="orderNumber">Order Number</label>
+            <input type="text" id="orderNumber" placeholder="e.g., 12" autofocus>
+        </div>
+        
+        <div class="camera-section">
+            <button id="cameraBtn">📸 Take Photo</button>
+            <input type="file" id="camera-input" accept="image/*" capture="environment">
+            <div class="preview hidden" id="previewSection">
+                <img id="preview-img" alt="Photo preview">
+            </div>
+            <div class="gps-info hidden" id="gpsInfo">
+                📍 GPS: <span id="gpsCoords">Waiting...</span>
+            </div>
+        </div>
+        
+        <button id="saveBtn" disabled>Save Delivery</button>
+        
+        <div class="action-buttons">
+            <button class="btn btn-drive hidden" id="signInBtn">🔐 Sign in with Google</button>
+            <button class="btn btn-success hidden" id="uploadDriveBtn">☁️ Upload to Google Drive</button>
+            <button class="btn btn-primary" id="exportBtn">📊 Export to Excel</button>
+            <button class="btn btn-secondary" id="viewBtn">👁️ View All</button>
+        </div>
+        
+        <div class="deliveries-list hidden" id="deliveriesList"></div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    
+    <script>
+        // Configuration
+        const CLIENT_ID = '748854288515-9f4gpar0877eca3uteg501tr88qn2fkf.apps.googleusercontent.com';
+        const SCOPES = 'https://www.googleapis.com/auth/drive.file';
+        const STORAGE_KEY = 'deliveryTrackerData';
+        const DRIVE_FOLDER_NAME = 'Delivery Photos';
+        
+        // Google Auth
+        let tokenClient;
+        let accessToken = null;
+        let gapiInited = false;
+        
+        // Current delivery data
+        let currentDelivery = {
+            orderNumber: '',
+            photo: null,
+            photoName: '',
+            latitude: null,
+            longitude: null,
+            timestamp: null
+        };
+        
+        // Initialize Google API
+        function gapiLoaded() {
+            gapi.load('client', initializeGapiClient);
+        }
+        
+        async function initializeGapiClient() {
+            await gapi.client.init({
+                discoveryDocs: ['https://www.googleapis.com/discovery/v1/apis/drive/v3/rest'],
+            });
+            gapiInited = true;
+        }
+        
+        // Initialize Google Identity Services
+        function gisLoaded() {
+            tokenClient = google.accounts.oauth2.initTokenClient({
+                client_id: CLIENT_ID,
+                scope: SCOPES,
+                callback: (tokenResponse) => {
+                    accessToken = tokenResponse.access_token;
+                    updateGoogleStatus(true);
+                },
+            });
+            
+            // Check if we have a stored token
+            const storedToken = localStorage.getItem('googleAccessToken');
+            if (storedToken) {
+                accessToken = storedToken;
+                updateGoogleStatus(true);
+            }
+        }
+        
+        // Update Google connection status
+        function updateGoogleStatus(connected) {
+            const statusEl = document.getElementById('googleStatus');
+            const signInBtn = document.getElementById('signInBtn');
+            const uploadBtn = document.getElementById('uploadDriveBtn');
+            
+            if (connected) {
+                statusEl.innerHTML = '<span class="google-connected">✅ Connected to Google Drive</span>';
+                signInBtn.classList.add('hidden');
+                uploadBtn.classList.remove('hidden');
+            } else {
+                statusEl.innerHTML = '<span class="google-disconnected">📴 Not connected to Google Drive</span>';
+                signInBtn.classList.remove('hidden');
+                uploadBtn.classList.add('hidden');
+            }
+        }
+        
+        // Sign in to Google
+        document.getElementById('signInBtn').addEventListener('click', () => {
+            if (!tokenClient) {
+                showMessage('error', 'Google API not loaded yet. Please wait a moment and try again.');
+                return;
+            }
+            tokenClient.requestAccessToken();
+        });
+        
+        // Get deliveries from localStorage
+        function getDeliveries() {
+            const data = localStorage.getItem(STORAGE_KEY);
+            return data ? JSON.parse(data) : [];
+        }
+        
+        // Save deliveries to localStorage
+        function saveDeliveries(deliveries) {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(deliveries));
+            updateDeliveryCount();
+        }
+        
+        // Update delivery count
+        function updateDeliveryCount() {
+            const deliveries = getDeliveries();
+            document.getElementById('deliveryCount').textContent = deliveries.length;
+        }
+        
+        // Get current GPS position
+        function getCurrentPosition() {
+            return new Promise((resolve, reject) => {
+                if (!navigator.geolocation) {
+                    reject(new Error('Geolocation not supported'));
+                    return;
+                }
+                
+                navigator.geolocation.getCurrentPosition(
+                    position => resolve(position),
+                    error => reject(error),
+                    { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
+                );
+            });
+        }
+        
+        // Format date for filename
+        function formatDate(date) {
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
+            const hours = String(date.getHours()).padStart(2, '0');
+            const minutes = String(date.getMinutes()).padStart(2, '0');
+            const seconds = String(date.getSeconds()).padStart(2, '0');
+            return `${year}-${month}-${day}_${hours}-${minutes}-${seconds}`;
+        }
+        
+        // Show message
+        function showMessage(type, text) {
+            const successMsg = document.getElementById('successMsg');
+            const errorMsg = document.getElementById('errorMsg');
+            
+            if (type === 'success') {
+                if (text) successMsg.textContent = text;
+                successMsg.style.display = 'block';
+                errorMsg.style.display = 'none';
+                setTimeout(() => successMsg.style.display = 'none', 3000);
+            } else {
+                if (text) errorMsg.textContent = text;
+                errorMsg.style.display = 'block';
+                successMsg.style.display = 'none';
+                setTimeout(() => errorMsg.style.display = 'none', 3000);
+            }
+        }
+        
+        // Camera button click
+        document.getElementById('cameraBtn').addEventListener('click', () => {
+            document.getElementById('camera-input').click();
+        });
+        
+        // Handle photo capture
+        document.getElementById('camera-input').addEventListener('change', async (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+            
+            // Show preview
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                document.getElementById('preview-img').src = event.target.result;
+                document.getElementById('previewSection').classList.remove('hidden');
+                currentDelivery.photo = event.target.result;
+                checkFormComplete();
+            };
+            reader.readAsDataURL(file);
+            
+            // Get GPS coordinates
+            try {
+                document.getElementById('gpsInfo').classList.remove('hidden');
+                document.getElementById('gpsCoords').textContent = 'Getting location...';
+                
+                const position = await getCurrentPosition();
+                currentDelivery.latitude = position.coords.latitude;
+                currentDelivery.longitude = position.coords.longitude;
+                
+                document.getElementById('gpsCoords').textContent = 
+                    `${currentDelivery.latitude.toFixed(6)}, ${currentDelivery.longitude.toFixed(6)}`;
+                
+                checkFormComplete();
+            } catch (error) {
+                console.error('GPS error:', error);
+                document.getElementById('gpsCoords').textContent = 'GPS unavailable';
+                showMessage('error', 'Could not get GPS location. Photo saved without GPS.');
+            }
+        });
+        
+        // Check if form is complete
+        function checkFormComplete() {
+            const orderNumber = document.getElementById('orderNumber').value.trim();
+            const hasPhoto = currentDelivery.photo !== null;
+            
+            document.getElementById('saveBtn').disabled = !(orderNumber && hasPhoto);
+        }
+        
+        // Order number input
+        document.getElementById('orderNumber').addEventListener('input', checkFormComplete);
+        
+        // Save delivery
+        document.getElementById('saveBtn').addEventListener('click', () => {
+            const orderNumber = document.getElementById('orderNumber').value.trim();
+            
+            if (!orderNumber || !currentDelivery.photo) {
+                showMessage('error', 'Please fill in all fields and take a photo');
+                return;
+            }
+            
+            const now = new Date();
+            const photoName = `order_${orderNumber}_${formatDate(now)}.jpg`;
+            
+            const delivery = {
+                orderNumber: orderNumber,
+                photo: currentDelivery.photo,
+                photoName: photoName,
+                latitude: currentDelivery.latitude,
+                longitude: currentDelivery.longitude,
+                timestamp: now.toISOString(),
+                dateTime: now.toLocaleString(),
+                uploaded: false
+            };
+            
+            const deliveries = getDeliveries();
+            deliveries.push(delivery);
+            saveDeliveries(deliveries);
+            
+            showMessage('success', `Delivery #${orderNumber} saved! ✓`);
+            
+            // Reset form
+            document.getElementById('orderNumber').value = '';
+            document.getElementById('preview-img').src = '';
+            document.getElementById('previewSection').classList.add('hidden');
+            document.getElementById('gpsInfo').classList.add('hidden');
+            document.getElementById('camera-input').value = '';
+            
+            currentDelivery = {
+                orderNumber: '',
+                photo: null,
+                photoName: '',
+                latitude: null,
+                longitude: null,
+                timestamp: null
+            };
+            
+            checkFormComplete();
+        });
+        
+        // Upload to Google Drive
+        document.getElementById('uploadDriveBtn').addEventListener('click', async () => {
+            if (!accessToken) {
+                showMessage('error', 'Please sign in to Google first');
+                return;
+            }
+            
+            const deliveries = getDeliveries().filter(d => !d.uploaded);
+            
+            if (deliveries.length === 0) {
+                showMessage('error', 'No new deliveries to upload');
+                return;
+            }
+            
+            const progressEl = document.getElementById('uploadProgress');
+            const progressFill = document.getElementById('progressFill');
+            const progressText = document.getElementById('progressText');
+            
+            progressEl.style.display = 'block';
+            
+            try {
+                // Find or create folder
+                progressText.textContent = 'Creating folder...';
+                const folderId = await findOrCreateFolder(DRIVE_FOLDER_NAME);
+                
+                // Upload each photo
+                let uploaded = 0;
+                for (const delivery of deliveries) {
+                    progressText.textContent = `Uploading ${delivery.photoName}...`;
+                    progressFill.style.width = `${(uploaded / deliveries.length) * 100}%`;
+                    
+                    await uploadPhotoToDrive(delivery, folderId);
+                    delivery.uploaded = true;
+                    uploaded++;
+                }
+                
+                // Create and upload Excel
+                progressText.textContent = 'Creating Excel file...';
+                progressFill.style.width = '100%';
+                await uploadExcelToDrive(getDeliveries(), folderId);
+                
+                // Save updated deliveries
+                saveDeliveries(getDeliveries());
+                
+                progressEl.style.display = 'none';
+                showMessage('success', `Successfully uploaded ${deliveries.length} deliveries to Google Drive! ✓`);
+                
+            } catch (error) {
+                console.error('Upload error:', error);
+                progressEl.style.display = 'none';
+                showMessage('error', 'Upload failed: ' + error.message);
+            }
+        });
+        
+        // Find or create Google Drive folder
+        async function findOrCreateFolder(folderName) {
+            const response = await gapi.client.drive.files.list({
+                q: `name='${folderName}' and mimeType='application/vnd.google-apps.folder' and trashed=false`,
+                fields: 'files(id, name)',
+            });
+            
+            if (response.result.files.length > 0) {
+                return response.result.files[0].id;
+            }
+            
+            // Create folder
+            const createResponse = await gapi.client.drive.files.create({
+                resource: {
+                    name: folderName,
+                    mimeType: 'application/vnd.google-apps.folder',
+                },
+                fields: 'id',
+            });
+            
+            return createResponse.result.id;
+        }
+        
+        // Upload photo to Google Drive
+        async function uploadPhotoToDrive(delivery, folderId) {
+            // Convert base64 to blob
+            const base64Data = delivery.photo.split(',')[1];
+            const blob = base64ToBlob(base64Data, 'image/jpeg');
+            
+            const metadata = {
+                name: delivery.photoName,
+                parents: [folderId],
+            };
+            
+            const form = new FormData();
+            form.append('metadata', new Blob([JSON.stringify(metadata)], { type: 'application/json' }));
+            form.append('file', blob);
+            
+            const response = await fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart', {
+                method: 'POST',
+                headers: new Headers({ 'Authorization': 'Bearer ' + accessToken }),
+                body: form,
+            });
+            
+            return response.json();
+        }
+        
+        // Upload Excel to Google Drive
+        async function uploadExcelToDrive(deliveries, folderId) {
+            // Create Excel
+            const excelData = deliveries.map(d => ({
+                'Order Number': d.orderNumber,
+                'Date/Time': d.dateTime,
+                'Latitude': d.latitude || 'N/A',
+                'Longitude': d.longitude || 'N/A',
+                'Photo Filename': d.photoName,
+                'GPS Link': d.latitude && d.longitude ? 
+                    `https://www.google.com/maps?q=${d.latitude},${d.longitude}` : 'N/A',
+                'Uploaded': d.uploaded ? 'Yes' : 'No'
+            }));
+            
+            const wb = XLSX.utils.book_new();
+            const ws = XLSX.utils.json_to_sheet(excelData);
+            
+            ws['!cols'] = [
+                {wch: 15}, {wch: 20}, {wch: 12}, {wch: 12}, {wch: 30}, {wch: 50}, {wch: 10}
+            ];
+            
+            XLSX.utils.book_append_sheet(wb, ws, 'Deliveries');
+            
+            // Convert to blob
+            const wbout = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
+            const blob = new Blob([wbout], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+            
+            const today = new Date();
+            const filename = `deliveries_${formatDate(today).split('_')[0]}.xlsx`;
+            
+            const metadata = {
+                name: filename,
+                parents: [folderId],
+            };
+            
+            const form = new FormData();
+            form.append('metadata', new Blob([JSON.stringify(metadata)], { type: 'application/json' }));
+            form.append('file', blob);
+            
+            const response = await fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart', {
+                method: 'POST',
+                headers: new Headers({ 'Authorization': 'Bearer ' + accessToken }),
+                body: form,
+            });
+            
+            return response.json();
+        }
+        
+        // Convert base64 to blob
+        function base64ToBlob(base64, mimeType) {
+            const byteCharacters = atob(base64);
+            const byteArrays = [];
+            
+            for (let offset = 0; offset < byteCharacters.length; offset += 512) {
+                const slice = byteCharacters.slice(offset, offset + 512);
+                const byteNumbers = new Array(slice.length);
+                
+                for (let i = 0; i < slice.length; i++) {
+                    byteNumbers[i] = slice.charCodeAt(i);
+                }
+                
+                const byteArray = new Uint8Array(byteNumbers);
+                byteArrays.push(byteArray);
+            }
+            
+            return new Blob(byteArrays, { type: mimeType });
+        }
+        
+        // Export to Excel (local download)
+        document.getElementById('exportBtn').addEventListener('click', () => {
+            const deliveries = getDeliveries();
+            
+            if (deliveries.length === 0) {
+                showMessage('error', 'No deliveries to export');
+                return;
+            }
+            
+            const excelData = deliveries.map(d => ({
+                'Order Number': d.orderNumber,
+                'Date/Time': d.dateTime,
+                'Latitude': d.latitude || 'N/A',
+                'Longitude': d.longitude || 'N/A',
+                'Photo Filename': d.photoName,
+                'GPS Link': d.latitude && d.longitude ? 
+                    `https://www.google.com/maps?q=${d.latitude},${d.longitude}` : 'N/A'
+            }));
+            
+            const wb = XLSX.utils.book_new();
+            const ws = XLSX.utils.json_to_sheet(excelData);
+            
+            ws['!cols'] = [
+                {wch: 15}, {wch: 20}, {wch: 12}, {wch: 12}, {wch: 30}, {wch: 50}
+            ];
+            
+            XLSX.utils.book_append_sheet(wb, ws, 'Deliveries');
+            
+            const today = new Date();
+            const filename = `deliveries_${formatDate(today).split('_')[0]}.xlsx`;
+            
+            XLSX.writeFile(wb, filename);
+            
+            showMessage('success', 'Excel exported! Photos are in your browser downloads.');
+            
+            deliveries.forEach(d => {
+                const link = document.createElement('a');
+                link.href = d.photo;
+                link.download = d.photoName;
+                link.click();
+            });
+        });
+        
+        // View all deliveries
+        document.getElementById('viewBtn').addEventListener('click', () => {
+            const deliveries = getDeliveries();
+            const listContainer = document.getElementById('deliveriesList');
+            
+            if (deliveries.length === 0) {
+                showMessage('error', 'No deliveries yet');
+                return;
+            }
+            
+            listContainer.innerHTML = '<h3 style="margin-bottom: 15px;">Recent Deliveries</h3>';
+            
+            deliveries.slice().reverse().forEach(d => {
+                const item = document.createElement('div');
+                item.className = 'delivery-item';
+                item.innerHTML = `
+                    <div class="delivery-info">
+                        <div class="delivery-order">Order #${d.orderNumber} ${d.uploaded ? '☁️' : '📱'}</div>
+                        <div class="delivery-time">${d.dateTime}</div>
+                        <div class="delivery-gps">${d.latitude && d.longitude ? 
+                            `📍 ${d.latitude.toFixed(4)}, ${d.longitude.toFixed(4)}` : 
+                            'No GPS'}</div>
+                    </div>
+                `;
+                listContainer.appendChild(item);
+            });
+            
+            listContainer.classList.toggle('hidden');
+        });
+        
+        // Load Google API
+        function loadGapi() {
+            const script = document.createElement('script');
+            script.src = 'https://apis.google.com/js/api.js';
+            script.onload = gapiLoaded;
+            document.head.appendChild(script);
+        }
+        
+        // Initialize
+        updateDeliveryCount();
+        loadGapi();
+        
+        // Check if Google Identity Services is loaded
+        window.addEventListener('load', () => {
+            if (typeof google !== 'undefined' && google.accounts) {
+                gisLoaded();
+            } else {
+                // Retry after a delay
+                setTimeout(() => {
+                    if (typeof google !== 'undefined' && google.accounts) {
+                        gisLoaded();
+                    }
+                }, 1000);
+            }
+        });
+    </script>
+</body>
+</html>
